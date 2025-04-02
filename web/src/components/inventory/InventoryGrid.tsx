@@ -31,12 +31,6 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
 
   return (
     <>
-      <div className="inventory-grid-header-wrapper">
-        <p>{inventory.label}</p>
-        <p>
-          {weight / 1000}/{inventory.maxWeight ? inventory.maxWeight / 1000 : 0}kg
-        </p>
-      </div>
 
       {isLeftInventory && hotbarItems.length > 0 && (
         <div className="hotbar-slots-row">
