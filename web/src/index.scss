@@ -13,7 +13,7 @@ $accent-color: #ff7700;
 $secondary-accent: #e411ff;
 $border-radius: 6px;
 $transition-speed: 0.2s;
-$slot-size: 10vh;
+$slot-size: 11vh;
 $grid-gap: 10px;
 $grid-cols: 5;
 $grid-rows: 5;
@@ -22,8 +22,6 @@ $grid-rows: 5;
 $dark-gradient: linear-gradient(to bottom, rgba(30, 31, 38, 0.9), rgba(20, 21, 28, 0.9));
 $accent-start: #ff7700;
 $accent-end: #e411ff;
-$accent-gradient: linear-gradient(135deg, $accent-start, $accent-end);
-
 
 // Base styles
 body {
@@ -251,7 +249,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .inventory-slot-label-box {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(2px);
   position: absolute;
   bottom: 0;
