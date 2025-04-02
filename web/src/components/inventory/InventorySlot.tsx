@@ -215,7 +215,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             </div>
           </div>
 
-          {isHotbarPosition && isHotbarSlot && <div className="hotbar-slot-number">{item.slot}</div>}
+          {/* {isHotbarPosition && isHotbarSlot && <div className="hotbar-slot-number">{item.slot}</div>} */}
         </div>
       )}
     </div>

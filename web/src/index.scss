@@ -71,8 +71,7 @@ input[type='number']::-webkit-outer-spin-button {
   align-items: center;
   height: 100%;
   gap: 24px;
-  backdrop-filter: blur(8px);
-  background: $dark-gradient;
+  background: rgba(31, 31, 31, 0.9);
   position: relative;
 }
 
@@ -208,7 +207,7 @@ input[type='number']::-webkit-outer-spin-button {
   }
   
   &:hover {
-    transform: skew(-2deg);
+    transform: translateY(-2px);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1),
                 0 4px 12px rgba(0, 0, 0, 0.3);
     background-color: $slot-hover;
@@ -292,22 +291,25 @@ input[type='number']::-webkit-outer-spin-button {
 .item-slot-info-wrapper {
   display: flex;
   flex-direction: row;
-  align-self: flex-end;
+  justify-content: space-between;
+  align-self: stretch;
   padding: 4px 6px;
-  gap: 4px;
-  margin: 5px 5px 0 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-  border-radius: 3px;
+  margin: 5px 0 0 0;
+  background: transparent;
+  width: 100%;
   
   p {
     font-size: 10px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    
     &:last-child {
-      color: $primary-text;
+      color: #fff;
       font-weight: 600;
     }
   }
 }
+
 
 .item-slot-currency-wrapper {
   display: flex;
@@ -346,7 +348,7 @@ input[type='number']::-webkit-outer-spin-button {
   .weight-text {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-size: 14px;
     font-weight: bold;
     text-transform: uppercase;
@@ -411,7 +413,8 @@ input[type='number']::-webkit-outer-spin-button {
   .inventory-control-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    width: 120px;
     padding: 5px;
     position: relative;
     
@@ -430,10 +433,10 @@ input[type='number']::-webkit-outer-spin-button {
   
   .inventory-control-input {
     transition: all $transition-speed ease;
-    padding: 12px 8px;
+    padding: 8px 6px;
     border-radius: 6px;
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
     outline: none;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -454,7 +457,7 @@ input[type='number']::-webkit-outer-spin-button {
     color: $primary-text;
     background-color: rgba(30, 31, 38, 0.9);
     transition: all $transition-speed ease;
-    padding: 12px 8px;
+    padding: 8px 6px;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     text-transform: uppercase;
@@ -499,6 +502,10 @@ input[type='number']::-webkit-outer-spin-button {
       }
     }
   }
+}
+
+.inventory-grid-wrapper:last-of-type .inventory-grid-container {
+  max-height: calc(11vh * 5 + 10px * 4);
 }
 
 .divider {
@@ -708,7 +715,7 @@ input[type='number']::-webkit-outer-spin-button {
   &::after {
     content: '';
     position: absolute;
-    bottom: -8px;
+    bottom: -12px;
     left: 0;
     right: 0;
     height: 2px;
@@ -732,19 +739,20 @@ input[type='number']::-webkit-outer-spin-button {
 
 .hotbar-slot-number {
   position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 20px;
-  height: 20px;
-  background: $dark-gradient;
+  top: 50%;
+  left: -8px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #ff7700, #e411ff);
   color: white;
   font-weight: 700;
-  font-size: 16px;
-  border-radius: 4px;
+  font-size: 12px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   z-index: 5;
 }
 
