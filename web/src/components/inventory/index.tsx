@@ -13,6 +13,7 @@ import { closeTooltip } from '../../store/tooltip';
 import InventoryContext from './InventoryContext';
 import { closeContextMenu } from '../../store/contextMenu';
 import Fade from '../utils/transitions/Fade';
+import Title from './Title';
 
 const Inventory: React.FC = () => {
   const [inventoryVisible, setInventoryVisible] = useState(false);
@@ -44,6 +45,8 @@ const Inventory: React.FC = () => {
     <>
       <Fade in={inventoryVisible}>
         <div className="inventory-wrapper">
+          <Title title="ODESSARP" subtitle="Your personal inventory" />
+
           <LeftInventory />
           <InventoryControl />
           <RightInventory />
