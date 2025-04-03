@@ -11,8 +11,6 @@ import DragPreview from './components/utils/DragPreview';
 import { fetchNui } from './utils/fetchNui';
 import { useDragDropManager } from 'react-dnd';
 import KeyPress from './components/utils/KeyPress';
-import { ItemInspectionProvider } from './components/inventory/ItemInspection';
-import { LayoutToggle } from './utils/inventoryLayout';
 
 debugData([
   {
@@ -57,30 +55,6 @@ debugData([
             metadata: {
               label: 'Russian Cream',
               imageurl: 'https://i.imgur.com/2xHhTTz.png',
-              rarity: 'rare',
-            },
-          },
-          {
-            slot: 7,
-            name: 'pistol',
-            weight: 900,
-            count: 1,
-            metadata: {
-              description: 'A standard handgun used for self-defense.',
-              durability: 85,
-              quality: 'high',
-              components: ['pistol_extendedclip', 'pistol_flashlight'],
-              rarity: 'epic',
-            },
-          },
-          {
-            slot: 8,
-            name: 'gold',
-            weight: 250,
-            count: 3,
-            metadata: {
-              description: 'A valuable metal that never tarnishes.',
-              rarity: 'legendary',
             },
           },
         ],
@@ -137,19 +111,16 @@ const App: React.FC = () => {
   });
 
   return (
-    <ItemInspectionProvider>
-      <div className="app-wrapper">
-        <InventoryComponent />
-        <DragPreview />
-        <KeyPress />
-        <LayoutToggle />
-      </div>
-    </ItemInspectionProvider>
+    <div className="app-wrapper">
+      <InventoryComponent />
+      <DragPreview />
+      <KeyPress />
+    </div>
   );
 };
 
-addEventListener('dragstart', function (event) {
-  event.preventDefault();
-});
+addEventListener("dragstart", function(event) {
+  event.preventDefault()
+})
 
 export default App;
