@@ -1,7 +1,7 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { DragSource, Inventory, InventoryType, Slot, SlotWithItem } from '../../typings';
 import { useDrag, useDragDropManager, useDrop } from 'react-dnd';
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import WeightBar from '../utils/WeightBar';
 import { onDrop } from '../../dnd/onDrop';
 import { onBuy } from '../../dnd/onBuy';
@@ -15,6 +15,9 @@ import { ItemsPayload } from '../../reducers/refreshSlots';
 import { closeTooltip, openTooltip } from '../../store/tooltip';
 import { openContextMenu } from '../../store/contextMenu';
 import { useMergeRefs } from '@floating-ui/react';
+import { inspectItem } from './ItemInspection';
+import { determineItemRarity, getRarityClass } from '../../utils/itemRarity';
+import { useInventoryLayout } from '../../utils/inventoryLayout';
 
 interface SlotProps {
   inventoryId: Inventory['id'];
@@ -31,6 +34,10 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
   const manager = useDragDropManager();
   const dispatch = useAppDispatch();
   const timerRef = useRef<number | null>(null);
+  const doubleClickTimerRef = useRef<number | null>(null);
+  const [isDoubleClicked, setIsDoubleClicked] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const { layout } = useInventoryLayout();
 
   const canDrag = useCallback(() => {
     return canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) && canCraftItem(item, inventoryType);
@@ -111,30 +118,82 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     dispatch(closeTooltip());
     if (timerRef.current) clearTimeout(timerRef.current);
+
+    // Handle item usage with control/alt keys
     if (event.ctrlKey && isSlotWithItem(item) && inventoryType !== 'shop' && inventoryType !== 'crafting') {
       onDrop({ item: item, inventory: inventoryType });
+      return;
     } else if (event.altKey && isSlotWithItem(item) && inventoryType === 'player') {
       onUse(item);
+      return;
+    }
+
+    // Handle double click to use item
+    setClickCount((prev) => prev + 1);
+
+    if (clickCount === 1) {
+      // Double click detected
+      setClickCount(0);
+      if (isSlotWithItem(item) && inventoryType === 'player') {
+        // Animate the slot
+        setIsDoubleClicked(true);
+        setTimeout(() => setIsDoubleClicked(false), 400);
+        // Use the item
+        onUse(item);
+      }
+    } else {
+      // Start timer for potential second click
+      if (doubleClickTimerRef.current) clearTimeout(doubleClickTimerRef.current);
+      doubleClickTimerRef.current = window.setTimeout(() => {
+        setClickCount(0);
+      }, 300) as unknown as number;
+    }
+  };
+
+  // Handle item inspection
+  const handleInspect = () => {
+    if (isSlotWithItem(item)) {
+      inspectItem(item as SlotWithItem);
     }
   };
 
   const refs = useMergeRefs([connectRef, ref]);
 
+  // Determine the rarity class for styling
+  const rarityClass = isSlotWithItem(item) ? getRarityClass(item as SlotWithItem) : '';
+
+  // Determine if this is a special slot (hotbar, list view, etc)
   const isHotbarPosition = inventoryType === 'player' && item.slot <= 5;
+  const isListView = layout.currentLayout === 'list';
+
+  // Create style object manually instead of using the hook function
+  const slotStyleObject = {
+    height: isListView ? '4.5vh' : `${layout.itemSize}vh`,
+    transition: layout.animations ? 'all 0.3s ease-in-out' : 'none',
+    display: isListView ? 'flex' : undefined,
+    flexDirection: isListView ? ('row' as const) : undefined,
+    alignItems: isListView ? 'center' : undefined,
+    padding: isListView ? '0 10px' : undefined,
+    backgroundSize: isHotbarSlot || layout.compactMode ? '40%' : '60%',
+  };
 
   return (
     <div
       ref={refs}
       onContextMenu={handleContext}
       onClick={handleClick}
-      className={`inventory-slot ${isHotbarSlot ? 'hotbar-grid-slot' : ''}`}
+      onDoubleClick={handleInspect}
+      className={`inventory-slot ${isHotbarSlot ? 'hotbar-grid-slot' : ''} ${
+        isListView ? 'list-view' : ''
+      } ${rarityClass} ${isDoubleClicked ? 'double-clicked' : ''}`}
       style={{
+        ...slotStyleObject,
         filter:
           !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) || !canCraftItem(item, inventoryType)
             ? 'brightness(80%) grayscale(100%)'
             : undefined,
         opacity: isDragging ? 0.4 : 1.0,
-        backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
+        backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'})`,
         border: isOver ? '1px dashed rgba(255,255,255,0.4)' : '',
       }}
     >
@@ -199,7 +258,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
                         style={{ color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C' }}
                       >
                         <p>
-                          {Locale.$ || '$'}
+                          {Locale.$ || ''}
                           {item.price.toLocaleString('en-us')}
                         </p>
                       </div>
@@ -214,8 +273,6 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
               </div>
             </div>
           </div>
-
-          {/* {isHotbarPosition && isHotbarSlot && <div className="hotbar-slot-number">{item.slot}</div>} */}
         </div>
       )}
     </div>
