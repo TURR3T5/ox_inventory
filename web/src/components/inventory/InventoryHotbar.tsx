@@ -34,9 +34,9 @@ const InventoryHotbar: React.FC = () => {
             }}
             key={`hotbar-${item.slot}`}
           >
+            <div className="hotbar-number">{index + 1}</div>
             {isSlotWithItem(item) && (
               <>
-                <div className="hotbar-number">{index + 1}</div>
                 <div className="inventory-slot-label-box">
                   <div className="inventory-slot-label-text">
                     {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}

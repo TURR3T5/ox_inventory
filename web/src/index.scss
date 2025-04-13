@@ -647,15 +647,12 @@ input[type='number']::-webkit-outer-spin-button {
 // Hotbar
 .hotbar-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
   justify-content: center;
+  width: 100%;
   position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
+  bottom: 2vh;
 }
 
 .hotbar-item-slot {
@@ -672,28 +669,38 @@ input[type='number']::-webkit-outer-spin-button {
   width: $slot-size;
   height: $slot-size;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
-  &:hover {
-    transform: translateX(3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba($accent-color, 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-repeat: inherit;
+    background-position: inherit;
+    background-size: inherit;
+    z-index: 2;
   }
 }
 
 .hotbar-number {
   position: absolute;
-  top: 5px;
-  left: 5px;
-  height: 24px;
-  width: 24px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: $accent-color;
   color: $primary-text;
-  font-size: 14px;
+  font-size: 80px;
   font-weight: 600;
   border-radius: 4px;
+  opacity: 0.2;
+  z-index: 1;
 }
 
 .hotbar-slot-header-wrapper {
