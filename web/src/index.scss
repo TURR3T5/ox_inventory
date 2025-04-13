@@ -149,7 +149,7 @@ input[type='number']::-webkit-outer-spin-button {
   grid-auto-rows: $slot-size;
   gap: $grid-gap;
   overflow-y: auto;
-  max-height: calc($slot-size * 5 + $grid-gap * 5);
+  max-height: calc($slot-size * 4 + $grid-gap * 3.5);
   padding-right: 6px;
 }
 
@@ -308,7 +308,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 .inventory-columns {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 24px;
 }
 
@@ -437,6 +437,10 @@ input[type='number']::-webkit-outer-spin-button {
 
 // Inventory control section
 .inventory-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
   .inventory-control-wrapper {
     display: flex;
     flex-direction: column;
@@ -857,6 +861,7 @@ input[type='number']::-webkit-outer-spin-button {
   align-items: center;
   gap: 10px;
   margin-bottom: 5px;
+  height: 50px;
   
   .section-icon {
     width: 42px;

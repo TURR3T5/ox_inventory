@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDrop } from 'react-dnd';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { selectItemAmount, setItemAmount } from '../../store/inventory';
@@ -33,28 +33,26 @@ const InventoryControl: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="inventory-control">
-        <div className="inventory-control-wrapper">
-          <input
-            className="inventory-control-input"
-            type="number"
-            defaultValue={itemAmount}
-            onChange={inputHandler}
-            min={0}
-          />
-          <button className="inventory-control-button" ref={use}>
-            {Locale.ui_use || 'Use'}
-          </button>
-          <button className="inventory-control-button" ref={give}>
-            {Locale.ui_give || 'Give'}
-          </button>
-          <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
-            {Locale.ui_close || 'Close'}
-          </button>
-        </div>
+    <div className="inventory-control">
+      <div className="inventory-control-wrapper">
+        <input
+          className="inventory-control-input"
+          type="number"
+          defaultValue={itemAmount}
+          onChange={inputHandler}
+          min={0}
+        />
+        <button className="inventory-control-button" ref={use}>
+          {Locale.ui_use || 'Use'}
+        </button>
+        <button className="inventory-control-button" ref={give}>
+          {Locale.ui_give || 'Give'}
+        </button>
+        <button className="inventory-control-button" onClick={() => fetchNui('exit')}>
+          {Locale.ui_close || 'Close'}
+        </button>
       </div>
-    </>
+    </div>
   );
 };
 
