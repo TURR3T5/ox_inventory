@@ -45,8 +45,6 @@ const Inventory: React.FC = () => {
     <>
       <Fade in={inventoryVisible}>
         <div className="inventory-wrapper">
-          <Title title="ODESSARP" subtitle="Your personal inventory" />
-
           <LeftInventory />
           <InventoryControl />
           <RightInventory />
