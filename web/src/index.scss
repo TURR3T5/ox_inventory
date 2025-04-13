@@ -88,36 +88,6 @@ input[type='number']::-webkit-outer-spin-button {
   align-items: flex-start;
 }
 
-// Title
-.miami-title {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 10;
-  
-  .title-text {
-    font-size: 34px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    background: $accent-color;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 5px rgba($accent-color, 0.7);
-    margin-bottom: 5px;
-  }
-  
-  .subtitle-text {
-    font-size: 14px;
-    color: $secondary-text;
-    font-weight: 500;
-    letter-spacing: 1px;
-  }
-}
-
 // Inventory grid
 .inventory-grid-wrapper {
   display: flex;
@@ -175,16 +145,12 @@ input[type='number']::-webkit-outer-spin-button {
 
 .inventory-grid-container {
   display: grid;
-  grid-template-columns: repeat($grid-cols, $slot-size);
+  grid-template-columns: repeat(5, $slot-size);
   grid-auto-rows: $slot-size;
   gap: $grid-gap;
   overflow-y: auto;
+  max-height: calc($slot-size * 5 + $grid-gap * 5);
   padding-right: 6px;
-  max-height: calc($slot-size * 4 + $grid-gap * 3);
-  
-  &::-webkit-scrollbar {
-    width: 3px;
-  }
 }
 
 // Inventory slots
@@ -207,7 +173,8 @@ input[type='number']::-webkit-outer-spin-button {
   }
   
   &:hover {
-    transform: translateY(-2px);
+    transform: scale(1.03);
+    z-index: 10;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1),
                 0 4px 12px rgba(0, 0, 0, 0.3);
     background-color: $slot-hover;
@@ -339,11 +306,71 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
+.inventory-columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.inventory-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 360px;
+}
+
+// inventory info
+
+.inventory-info-container {
+  padding: 10px;
+  background: rgba(18, 18, 20, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  height: $slot-size;
+}
+
+.section-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: $secondary-text;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.info-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.info-icon {
+  font-size: 20px;
+  line-height: 1;
+  font-style: normal;
+}
+
+.info-text {
+  font-size: 12px;
+  color: $secondary-text;
+}
+
 // segmented weight bar
 .weight-bar-container {
   position: relative;
   padding: 10px;
-  margin-top: 5px;
+  margin-bottom: 10px;
+  border-radius: 6px;
   
   .weight-text {
     display: flex;
@@ -711,56 +738,15 @@ input[type='number']::-webkit-outer-spin-button {
 
 /* separated hotbar */
 
+/* .quick-access-container {
+
+} */
+
 .hotbar-slots-row {
   display: grid;
   grid-template-columns: repeat(5, $slot-size);
   grid-template-rows: $slot-size;
   gap: $grid-gap;
-  margin-bottom: 15px;
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: $secondary-text;
-    opacity: 0.7;
-    border-radius: 1px;
-  }
-}
-
-.hotbar-grid-slot {
-  background-color: rgba(35, 35, 38, 0.8) !important;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
-    border-color: rgba($accent-start, 0.3) !important;
-  }
-}
-
-.hotbar-slot-number {
-  position: absolute;
-  top: 50%;
-  left: -8px;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  background: linear-gradient(135deg, #ff7700, #e411ff);
-  color: white;
-  font-weight: 700;
-  font-size: 12px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  z-index: 5;
 }
 
 // Item notifications

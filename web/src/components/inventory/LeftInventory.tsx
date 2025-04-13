@@ -5,7 +5,6 @@ import { selectLeftInventory } from '../../store/inventory';
 import SectionHeader from './SectionHeader';
 import { InventoryIcon, PlayerIcon } from './InventoryIcons';
 import { Locale } from '../../store/locale';
-
 const LeftInventory: React.FC = () => {
   const leftInventory = useAppSelector(selectLeftInventory);
 
@@ -16,7 +15,7 @@ const LeftInventory: React.FC = () => {
   return (
     <div className="inventory-grid-wrapper">
       <SectionHeader title={title} description={description} icon={icon} />
-      <InventoryGrid inventory={leftInventory} />
+      <InventoryGrid inventory={leftInventory} skipHotbar={true} />
     </div>
   );
 };
