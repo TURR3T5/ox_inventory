@@ -75,19 +75,6 @@ input[type='number']::-webkit-outer-spin-button {
   position: relative;
 }
 
-.main-inventory-area {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-}
-
-
-.inventory-content-wrapper {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
 // Inventory grid
 .inventory-grid-wrapper {
   display: flex;
