@@ -15,19 +15,19 @@ const RightInventory: React.FC = () => {
   switch (rightInventory.type) {
     case 'shop':
       icon = <ShopIcon />;
-      description = Locale.ui_shopdescription || 'Items available for purchase.';
+      description = Locale.ui_shopdescription || 'Items som du kan købe.';
       break;
     case 'crafting':
       icon = <CraftingIcon />;
-      description = Locale.ui_craftingdescription || 'Craft items using materials.';
+      description = Locale.ui_craftingdescription || 'Craft items ved at bruge materialer.';
       break;
     case 'container':
       icon = <ContainerIcon />;
-      description = Locale.ui_containerdescription || 'Items stored in this container.';
+      description = Locale.ui_containerdescription || 'Items opbevaret i denne container.';
       break;
     default:
       icon = <InventoryIcon />;
-      description = Locale.ui_secondarydescription || 'Secondary storage.';
+      description = Locale.ui_secondarydescription || 'Sekundær Opbevaring.';
   }
 
   const title = rightInventory.label || 'SECONDARY';

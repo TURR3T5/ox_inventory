@@ -36,13 +36,29 @@ const InventoryHotbar: React.FC = () => {
           >
             <div className="hotbar-number">{index + 1}</div>
             {isSlotWithItem(item) && (
-              <>
+              <div className="item-slot-wrapper">
+                <div className="item-slot-header-wrapper">
+                  <div className="item-slot-info-wrapper">
+                    <p>
+                      {item.weight > 0
+                        ? item.weight >= 1000
+                          ? `${(item.weight / 1000).toLocaleString('en-us', {
+                              minimumFractionDigits: 2,
+                            })}kg `
+                          : `${item.weight.toLocaleString('en-us', {
+                              minimumFractionDigits: 0,
+                            })}g `
+                        : ''}
+                    </p>
+                    <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
+                  </div>
+                </div>
                 <div className="inventory-slot-label-box">
                   <div className="inventory-slot-label-text">
                     {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                   </div>
                 </div>
-              </>
+              </div>
             )}
           </div>
         ))}

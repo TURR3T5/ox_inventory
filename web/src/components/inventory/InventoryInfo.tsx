@@ -5,8 +5,13 @@ const InventoryInfo: React.FC = () => {
   const renderContent = () => {
     return (
       <>
-        <div className="section-label">CRAFTING</div>
-        <CraftingInterface />
+        <div className="coming-soon-container">
+          <div className="blurred-content">
+            <div className="section-label">CRAFTING</div>
+            <CraftingInterface />
+          </div>
+          <div className="coming-soon-text">Kommer Snart</div>
+        </div>
       </>
     );
   };

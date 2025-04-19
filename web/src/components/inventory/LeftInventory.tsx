@@ -10,7 +10,7 @@ const LeftInventory: React.FC = () => {
 
   const icon = leftInventory.type === 'player' ? <PlayerIcon /> : <InventoryIcon />;
   const title = leftInventory.label || 'INVENTORY';
-  const description = Locale.ui_playerinventory || 'The items on your character can be found here.';
+  const description = Locale.ui_playerinventory || 'Itemsne på din karakter kan findes her.';
 
   return (
     <div className="inventory-grid-wrapper">
