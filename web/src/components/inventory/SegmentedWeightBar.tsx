@@ -11,7 +11,7 @@ interface SegmentedWeightBarProps {
 const SegmentedWeightBar: React.FC<SegmentedWeightBarProps> = ({ weight, maxWeight }) => {
   const leftInventory = useAppSelector(selectLeftInventory);
   const title = leftInventory.label || 'INVENTORY';
-  const segments = 33;
+  const segments = 44;
   const activeSegments = useMemo(() => {
     const percentage = (weight / maxWeight) * 100;
     return Math.min(Math.ceil((percentage / 100) * segments), segments);

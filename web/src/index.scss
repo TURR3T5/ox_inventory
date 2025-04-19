@@ -2,7 +2,7 @@
 $background-color: rgba(18, 18, 20, 0.85);
 $slot-background: rgba(28, 28, 30, 0.7);
 $slot-empty: rgba(22, 22, 24, 0.5);
-$slot-hover: rgba(35, 35, 38, 0.9);
+$slot-hover: rgba(35, 35, 38, 0.8);
 $primary-text: #f0f0f0;
 $secondary-text: #a0a0a0;
 $accent-color: #ff7700;
@@ -373,18 +373,24 @@ input[type='number']::-webkit-outer-spin-button {
 // segmented weight bar
 .weight-bar-container {
   position: relative;
-  padding: 10px;
+  padding: 2px;
   margin-bottom: 10px;
-  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   
   .weight-text {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
     font-size: 14px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
+    align-items: flex-end;
+    
+    span:first-child {
+      color: $secondary-text;
+    }
     
     span:last-child {
       color: $primary-text;
@@ -396,11 +402,11 @@ input[type='number']::-webkit-outer-spin-button {
     width: 100%;
     display: flex;
     overflow: hidden;
-    padding: 0 4px;
+    
     .segment {
       flex: 1;
       height: 100%;
-      margin: 0 7px;
+      margin: 0 4px;
       border-radius: 4px;
       transform: skewX(-20deg); 
       background: $secondary-text;
@@ -413,11 +419,11 @@ input[type='number']::-webkit-outer-spin-button {
       }
       
       &:first-child {
-        margin-left: 0;
+        transform-origin: left;
       }
       
       &:last-child {
-        margin-right: 0;
+        transform-origin: right;
       }
     }
   }
@@ -429,13 +435,14 @@ input[type='number']::-webkit-outer-spin-button {
   height: 3px;
   overflow: hidden;
   position: absolute;
+  border-radius: 2px;
   bottom: 24px;
-  left: 5px;
-  right: 5px;
+  left: 0px;
+  right: 0px;
   
   div {
     height: 100%;
-    background-image: linear-gradient(to right, #FFD700, #FF6B6B);
+    background-color: #ff7700 !important;
     transition: width $transition-speed ease, background $transition-speed ease;
   }
 }
@@ -869,6 +876,7 @@ input[type='number']::-webkit-outer-spin-button {
   gap: 10px;
   margin-bottom: 5px;
   height: 50px;
+  align-items: flex-end;
   
   .section-icon {
     width: 42px;
