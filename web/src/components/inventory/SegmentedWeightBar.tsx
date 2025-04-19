@@ -1,13 +1,17 @@
 import React, { useMemo } from 'react';
+import SectionHeader from './SectionHeader';
+import { selectLeftInventory } from '../../store/inventory';
+import { useAppSelector } from '../../store';
 
 interface SegmentedWeightBarProps {
   weight: number;
   maxWeight: number;
-  label?: string;
 }
 
-const SegmentedWeightBar: React.FC<SegmentedWeightBarProps> = ({ weight, maxWeight, label = 'WEIGHT' }) => {
-  const segments = 33; // Number of segments in the bar
+const SegmentedWeightBar: React.FC<SegmentedWeightBarProps> = ({ weight, maxWeight }) => {
+  const leftInventory = useAppSelector(selectLeftInventory);
+  const title = leftInventory.label || 'INVENTORY';
+  const segments = 33;
   const activeSegments = useMemo(() => {
     const percentage = (weight / maxWeight) * 100;
     return Math.min(Math.ceil((percentage / 100) * segments), segments);
@@ -16,7 +20,7 @@ const SegmentedWeightBar: React.FC<SegmentedWeightBarProps> = ({ weight, maxWeig
   return (
     <div className="weight-bar-container">
       <div className="weight-text">
-        <span>{label}</span>
+        <SectionHeader title={title} />
         <span>{weight.toFixed(2)}KG</span>
       </div>
       <div className="weight-bar">
