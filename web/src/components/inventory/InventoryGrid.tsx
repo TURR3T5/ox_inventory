@@ -31,14 +31,14 @@ const InventoryGrid: React.FC<{ inventory: Inventory; skipHotbar?: boolean }> = 
 
   return (
     <>
-      <div style={{ visibility: isShopInventory ? 'hidden' : 'visible' }}>
-        {inventory.maxWeight && (
+      <div className="weight-bar-placeholder" style={{ height: '50px' }}>
+        {inventory.maxWeight && !isShopInventory ? (
           <SegmentedWeightBar
             weight={weight / 1000}
             maxWeight={inventory.maxWeight / 1000}
             inventorySide={inventorySide}
           />
-        )}
+        ) : null}
       </div>
 
       <div className="inventory-grid-container" ref={containerRef} style={{ pointerEvents: isBusy ? 'none' : 'auto' }}>
