@@ -465,7 +465,7 @@ input[type='number']::-webkit-outer-spin-button {
     padding: 12px 10px;
     border-radius: 6px;
     font-family: 'Poppins', sans-serif;
-    font-size: 20px;
+    font-size: 16px;
     text-align: center;
     outline: none;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -482,7 +482,7 @@ input[type='number']::-webkit-outer-spin-button {
   
   .inventory-control-button {
     position: relative;
-    font-size: 20px;
+    font-size: 16px;
     color: $primary-text;
     background-color: rgba(30, 31, 38, 0.9);
     transition: all $transition-speed ease;
@@ -520,15 +520,6 @@ input[type='number']::-webkit-outer-spin-button {
     
     &:active {
       transform: translateY(1px);
-    }
-    
-    &:nth-child(2) {
-      background: rgba($accent-color, 0.15);
-      border-color: rgba($accent-color, 0.3);
-      
-      &:hover {
-        background: rgba($accent-color, 0.25);
-      }
     }
   }
 }
