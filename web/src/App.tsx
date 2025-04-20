@@ -63,7 +63,7 @@ debugData([
         id: 'shop',
         type: 'crafting',
         slots: 5000,
-        label: 'Bob Smith',
+        label: 'Hawk Tuah',
         weight: 3000,
         maxWeight: 5000,
         items: [
