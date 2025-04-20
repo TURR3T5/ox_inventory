@@ -1,22 +1,27 @@
 import React from 'react';
 import CraftingInterface from './CraftingInterface';
+import { useAppSelector } from '../../store';
+import { selectRightInventory } from '../../store/inventory';
 
 const InventoryInfo: React.FC = () => {
-  const renderContent = () => {
-    return (
-      <>
+  const rightInventory = useAppSelector(selectRightInventory);
+  const isCrafting = rightInventory.type === 'crafting';
+
+  return (
+    <div className="inventory-info-container">
+      <div className="section-label">CRAFTING</div>
+      {isCrafting ? (
+        <CraftingInterface />
+      ) : (
         <div className="coming-soon-container">
           <div className="blurred-content">
-            <div className="section-label">CRAFTING</div>
             <CraftingInterface />
           </div>
           <div className="coming-soon-text">Kommer Snart</div>
         </div>
-      </>
-    );
-  };
-
-  return <div className="inventory-info-container">{renderContent()}</div>;
+      )}
+    </div>
+  );
 };
 
 export default InventoryInfo;

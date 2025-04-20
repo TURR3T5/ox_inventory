@@ -1,15 +1,22 @@
-// components/inventory/CraftingInterface.tsx
-import React, { useState } from 'react';
-import { useAppDispatch } from '../../store';
+import React, { useState, useEffect } from 'react';
 import { DragSource, SlotWithItem } from '../../typings';
 import { getItemUrl } from '../../helpers';
 import { useDrop } from 'react-dnd';
+import { Locale } from '../../store/locale';
 
 const CraftingInterface: React.FC = () => {
-  const [ingredientSlots, setIngredientSlots] = useState<(SlotWithItem | null)[]>(Array(8).fill(null));
-  const [resultSlot, setResultSlot] = useState<SlotWithItem | null>(null);
+  const [ingredientSlots, setIngredientSlots] = useState<(SlotWithItem | null)[]>(Array(5).fill(null));
+  const [canCraft, setCanCraft] = useState(false);
 
-  const renderMiniSlot = (item: SlotWithItem | null, index: number) => {
+  useEffect(() => {
+    const hasIngredients = ingredientSlots.some((slot) => slot !== null);
+    setCanCraft(hasIngredients);
+
+    // In a real implementation, you would check against recipes here
+    // and only set canCraft to true if there's a valid recipe
+  }, [ingredientSlots]);
+
+  const renderSlot = (item: SlotWithItem | null, index: number) => {
     const [{ isOver }, drop] = useDrop<DragSource, void, { isOver: boolean }>(
       () => ({
         accept: 'SLOT',
@@ -25,9 +32,6 @@ const CraftingInterface: React.FC = () => {
             weight: 0,
           } as SlotWithItem;
           setIngredientSlots(newSlots);
-
-          // In a real implementation, this would trigger a backend call to check if recipe is valid
-          // and then update the result slot accordingly
         },
       }),
       [index, ingredientSlots]
@@ -36,40 +40,45 @@ const CraftingInterface: React.FC = () => {
     return (
       <div
         ref={drop}
-        className={`crafting-mini-slot ${isOver ? 'crafting-slot-hover' : ''}`}
+        className={`inventory-slot ${isOver ? 'crafting-slot-hover' : ''}`}
         style={{
           backgroundImage: item ? `url(${getItemUrl(item)})` : 'none',
         }}
       >
-        {!item && <span className="crafting-slot-plus">+</span>}
+        {!item && <div className="crafting-slot-placeholder"></div>}
+        {item && (
+          <div className="item-slot-wrapper">
+            <div className="item-slot-header-wrapper">
+              <div className="item-slot-info-wrapper">
+                <p>{item.count > 1 ? `${item.count}x` : ''}</p>
+              </div>
+            </div>
+            <div className="inventory-slot-label-box">
+              <div className="inventory-slot-label-text">{item.name}</div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
 
-  const renderResultSlot = () => {
-    return (
-      <div
-        className="crafting-result-slot"
-        style={{
-          backgroundImage: resultSlot ? `url(${getItemUrl(resultSlot)})` : 'none',
-        }}
-      >
-        {!resultSlot && <div className="crafting-result-indicator"></div>}
-      </div>
-    );
+  const handleCraft = () => {
+    // Handle crafting logic here
+    console.log('Crafting with ingredients:', ingredientSlots);
+
+    // Reset slots after crafting
+    setIngredientSlots(Array(5).fill(null));
   };
 
   return (
     <div className="crafting-interface">
-      <div className="crafting-grid-container">
-        <div className="crafting-ingredients-grid">
-          {ingredientSlots.map((slot, index) => renderMiniSlot(slot, index))}
-        </div>
+      <div className="crafting-slots-row">{ingredientSlots.map((slot, index) => renderSlot(slot, index))}</div>
 
-        <div className="crafting-arrow">→</div>
-
-        {renderResultSlot()}
-      </div>
+      {canCraft && (
+        <button className="crafting-button" onClick={handleCraft}>
+          {Locale.ui_craft || 'Craft'}
+        </button>
+      )}
     </div>
   );
 };

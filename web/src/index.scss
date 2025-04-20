@@ -246,7 +246,6 @@ input[type='number']::-webkit-outer-spin-button {
   p {
     font-size: 10px;
     font-weight: 500;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
     
     &:last-child {
       color: #fff;
@@ -265,7 +264,6 @@ input[type='number']::-webkit-outer-spin-button {
   
   p {
     font-size: 13px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     color: #2ECC71;
     font-weight: 600;
   }
@@ -279,7 +277,6 @@ input[type='number']::-webkit-outer-spin-button {
   
   p {
     font-size: 13px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     font-weight: 600;
   }
 }
@@ -300,10 +297,6 @@ input[type='number']::-webkit-outer-spin-button {
 // inventory info
 
 .inventory-info-container {
-  padding: 10px 10px;
-  background: rgba(18, 18, 20, 0.5);
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   height: $slot-size;
   display: flex;
   flex-direction: column;
@@ -330,7 +323,6 @@ input[type='number']::-webkit-outer-spin-button {
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 
@@ -919,101 +911,55 @@ input[type='number']::-webkit-outer-spin-button {
 .crafting-interface {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  justify-content: flex-start;
-}
-
-.crafting-grid-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 10px;
+  width: 100%;
 }
 
-.crafting-ingredients-grid {
+.crafting-slots-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 4px;
-  width: 80%;
+  grid-template-columns: repeat(5, $slot-size);
+  grid-auto-rows: $slot-size;
+  gap: $grid-gap;
 }
 
-.crafting-mini-slot {
-  width: 60px; 
-  height: 60px; 
-  background-color: $slot-empty;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 60%;
-  border-radius: $border-radius;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+.crafting-slot-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  transition: all 0.2s ease;
-
-  &.crafting-slot-hover {
-    background-color: $slot-hover;
-    box-shadow: 0 0 0 1px rgba($accent-color, 0.4);
+  
+  &::after {
+    content: '+';
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 24px;
   }
 }
 
-.crafting-slot-plus {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 20px; 
+.crafting-slot-hover {
+  background-color: $slot-hover;
+  box-shadow: 0 0 0 1px rgba($accent-color, 0.4);
 }
 
-.crafting-arrow {
-  font-size: 42px;
-  color: $accent-color;
-  margin: 0 10px;
-  display: flex;
-  align-items: center;
-  height: 124px;
-  align-self: center;
-}
-
-.crafting-result-slot {
-  width: 60px; 
-  height: 60px; 
-  background-color: rgba(30, 30, 35, 0.7);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 60%;
+.crafting-button {
+  margin-top: 10px;
+  padding: 10px;
   border-radius: $border-radius;
-  box-shadow: inset 0 0 0 1px rgba($accent-color, 0.3);
-  position: relative;
+  border: none;
+  background: #ff7700;
+  color: $primary-text;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
   cursor: pointer;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    bottom: -4px;
-    left: -4px;
-    border-radius: $border-radius + 4px;
-    background: linear-gradient(45deg, rgba($accent-start, 0.3), rgba($accent-end, 0.3));
-    z-index: -1;
-    opacity: 0.7;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba($accent-color, 0.3);
   }
-}
-
-.crafting-result-indicator {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
-  animation: pulse 2s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); }
-  50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
-  100% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); }
+  
+  &:active {
+    transform: translateY(1px);
+  }
 }
