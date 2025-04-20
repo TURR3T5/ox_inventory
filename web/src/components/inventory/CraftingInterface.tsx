@@ -73,12 +73,6 @@ const CraftingInterface: React.FC = () => {
   return (
     <div className="crafting-interface">
       <div className="crafting-slots-row">{ingredientSlots.map((slot, index) => renderSlot(slot, index))}</div>
-
-      {canCraft && (
-        <button className="crafting-button" onClick={handleCraft}>
-          {Locale.ui_craft || 'Craft'}
-        </button>
-      )}
     </div>
   );
 };

@@ -9,7 +9,10 @@ const InventoryInfo: React.FC = () => {
 
   return (
     <div className="inventory-info-container">
-      <div className="section-label">CRAFTING</div>
+      <div className="info-header">
+        <div className="section-label">CRAFTING</div>
+        {isCrafting && <button className="crafting-button">Craft</button>}
+      </div>
       {isCrafting ? (
         <CraftingInterface />
       ) : (

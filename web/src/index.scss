@@ -462,10 +462,10 @@ input[type='number']::-webkit-outer-spin-button {
   
   .inventory-control-input {
     transition: all $transition-speed ease;
-    padding: 8px 6px;
+    padding: 12px 10px;
     border-radius: 6px;
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
+    font-size: 20px;
     text-align: center;
     outline: none;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -482,11 +482,11 @@ input[type='number']::-webkit-outer-spin-button {
   
   .inventory-control-button {
     position: relative;
-    font-size: 14px;
+    font-size: 20px;
     color: $primary-text;
     background-color: rgba(30, 31, 38, 0.9);
     transition: all $transition-speed ease;
-    padding: 8px 6px;
+    padding: 12px 10px;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     text-transform: uppercase;
@@ -883,7 +883,7 @@ input[type='number']::-webkit-outer-spin-button {
   }
   
   .section-text {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -927,6 +927,19 @@ input[type='number']::-webkit-outer-spin-button {
 .crafting-slot-hover {
   background-color: $slot-hover;
   box-shadow: 0 0 0 1px rgba($accent-color, 0.4);
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  
+  .crafting-button {
+    font-size: 12px;
+    padding: 2px 12px;
+    height: fit-content;
+    margin-bottom: 4px;
+  }
 }
 
 .crafting-button {
