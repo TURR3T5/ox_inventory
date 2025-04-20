@@ -296,12 +296,6 @@ input[type='number']::-webkit-outer-spin-button {
 
 // inventory info
 
-.inventory-info-container {
-  height: $slot-size;
-  display: flex;
-  flex-direction: column;
-}
-
 .coming-soon-container {
   position: relative;
   width: 100%;
@@ -748,10 +742,6 @@ input[type='number']::-webkit-outer-spin-button {
 
 /* separated hotbar */
 
-/* .quick-access-container {
-
-} */
-
 .hotbar-slots-row {
   display: grid;
   grid-template-columns: repeat(5, $slot-size);
@@ -911,15 +901,13 @@ input[type='number']::-webkit-outer-spin-button {
 .crafting-interface {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 100%;
 }
 
 .crafting-slots-row {
   display: grid;
-  grid-template-columns: repeat(5, $slot-size);
-  grid-auto-rows: $slot-size;
-  gap: $grid-gap;
+  grid-template-columns: repeat(5, 10vh);
+  grid-template-rows: 10vh;
+  gap: 10px;
 }
 
 .crafting-slot-placeholder {
@@ -942,7 +930,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .crafting-button {
-  margin-top: 10px;
+  
   padding: 10px;
   border-radius: $border-radius;
   border: none;
