@@ -263,7 +263,7 @@ input[type='number']::-webkit-outer-spin-button {
   padding-right: 3px;
   
   p {
-    font-size: 13px;
+    font-size: 11px;
     color: #2ECC71;
     font-weight: 600;
   }
@@ -276,7 +276,7 @@ input[type='number']::-webkit-outer-spin-button {
   padding-right: 3px;
   
   p {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
   }
 }
@@ -522,10 +522,6 @@ input[type='number']::-webkit-outer-spin-button {
       transform: translateY(1px);
     }
   }
-}
-
-.inventory-grid-wrapper:last-of-type .inventory-grid-container {
-  max-height: calc(11vh * 5 + 10px * 4);
 }
 
 .divider {

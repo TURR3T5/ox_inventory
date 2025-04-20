@@ -25,18 +25,21 @@ const InventoryGrid: React.FC<{ inventory: Inventory; skipHotbar?: boolean }> = 
   }, [entry]);
 
   const isLeftInventory = inventory.type === 'player';
+  const isShopInventory = inventory.type === 'shop';
   const regularItems = isLeftInventory && skipHotbar ? inventory.items.slice(5) : inventory.items;
   const inventorySide = isLeftInventory ? 'left' : 'right';
 
   return (
     <>
-      {inventory.maxWeight && (
-        <SegmentedWeightBar
-          weight={weight / 1000}
-          maxWeight={inventory.maxWeight / 1000}
-          inventorySide={inventorySide}
-        />
-      )}
+      <div style={{ visibility: isShopInventory ? 'hidden' : 'visible' }}>
+        {inventory.maxWeight && (
+          <SegmentedWeightBar
+            weight={weight / 1000}
+            maxWeight={inventory.maxWeight / 1000}
+            inventorySide={inventorySide}
+          />
+        )}
+      </div>
 
       <div className="inventory-grid-container" ref={containerRef} style={{ pointerEvents: isBusy ? 'none' : 'auto' }}>
         {regularItems.slice(0, (page + 1) * PAGE_SIZE).map((item, index) => (
