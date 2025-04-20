@@ -41,6 +41,23 @@ const ItemNotification = React.forwardRef(
           <div className="item-notification-action-box">
             <p>{props.item.text}</p>
           </div>
+          <div className="item-slot-header-wrapper">
+            <div className="item-slot-info-wrapper">
+              <p>
+                {slotItem.weight > 0
+                  ? slotItem.weight >= 1000
+                    ? `${(slotItem.weight / 1000).toLocaleString('en-us', {
+                        minimumFractionDigits: 2,
+                      })}kg `
+                    : `${slotItem.weight.toLocaleString('en-us', {
+                        minimumFractionDigits: 0,
+                      })}g `
+                  : ''}
+              </p>
+              <p>{slotItem.count ? slotItem.count.toLocaleString('en-us') + `x` : ''}</p>
+            </div>
+          </div>
+
           <div className="inventory-slot-label-box">
             <div className="inventory-slot-label-text">{slotItem.metadata?.label || Items[slotItem.name]?.label}</div>
           </div>
