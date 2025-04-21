@@ -12,6 +12,8 @@ import Fade from './transitions/Fade';
 interface ItemNotificationProps {
   item: SlotWithItem;
   text: string;
+  isAddition?: boolean;
+  count?: number;
 }
 
 export const ItemNotificationsContext = React.createContext<{
@@ -27,6 +29,8 @@ export const useItemNotifications = () => {
 const ItemNotification = React.forwardRef(
   (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
     const slotItem = props.item.item;
+    const isAddition = props.item.isAddition;
+    const count = props.item.count;
 
     return (
       <div
@@ -39,7 +43,7 @@ const ItemNotification = React.forwardRef(
       >
         <div className="item-slot-wrapper">
           <div className="item-notification-action-box">
-            <p>{props.item.text}</p>
+            <p>{isAddition !== undefined ? (isAddition ? 'Tilføjet' : 'Fjernet') : props.item.text}</p>
           </div>
           <div className="item-slot-header-wrapper">
             <div className="item-slot-info-wrapper">
@@ -54,7 +58,14 @@ const ItemNotification = React.forwardRef(
                       })}g `
                   : ''}
               </p>
-              <p>{slotItem.count ? slotItem.count.toLocaleString('en-us') + `x` : ''}</p>
+              {isAddition !== undefined && count ? (
+                <p style={{ color: isAddition ? '#2ECC71' : '#E74C3C', fontWeight: '600' }}>
+                  {isAddition ? '+' : '-'}
+                  {count.toLocaleString('en-us')}
+                </p>
+              ) : (
+                <p>{slotItem.count ? slotItem.count.toLocaleString('en-us') + `x` : ''}</p>
+              )}
             </div>
           </div>
 
@@ -87,7 +98,21 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   };
 
   useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
-    add({ item: item, text: count ? `${Locale[text]} ${count}x` : `${Locale[text]}` });
+    const lowerText = Locale[text]?.toLowerCase() || text.toLowerCase();
+    const isAddition = !(
+      lowerText.includes('remov') ||
+      lowerText.includes('drop') ||
+      lowerText.includes('lost') ||
+      lowerText.includes('gave') ||
+      lowerText.includes('used')
+    );
+
+    add({
+      item: item,
+      text: Locale[text] || text,
+      isAddition: isAddition,
+      count: count,
+    });
   });
 
   return (
