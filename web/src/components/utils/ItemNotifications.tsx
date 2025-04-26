@@ -12,8 +12,8 @@ import Fade from './transitions/Fade';
 interface ItemNotificationProps {
   item: SlotWithItem;
   text: string;
-  isAddition?: boolean;
-  count?: number;
+  isAddition: boolean;
+  count: number;
 }
 
 export const ItemNotificationsContext = React.createContext<{
@@ -43,7 +43,7 @@ const ItemNotification = React.forwardRef(
       >
         <div className="item-slot-wrapper">
           <div className="item-notification-action-box">
-            <p>{isAddition !== undefined ? (isAddition ? 'Tilføjet' : 'Fjernet') : props.item.text}</p>
+            <p>{isAddition ? 'Tilføjet' : 'Fjernet'}</p>
           </div>
           <div className="item-slot-header-wrapper">
             <div className="item-slot-info-wrapper">
@@ -58,14 +58,10 @@ const ItemNotification = React.forwardRef(
                       })}g `
                   : ''}
               </p>
-              {isAddition !== undefined && count ? (
-                <p style={{ color: isAddition ? '#2ECC71' : '#E74C3C', fontWeight: '600' }}>
-                  {isAddition ? '+' : '-'}
-                  {count.toLocaleString('en-us')}
-                </p>
-              ) : (
-                <p>{slotItem.count ? slotItem.count.toLocaleString('en-us') + `x` : ''}</p>
-              )}
+              <p style={{ color: isAddition ? '#2ECC71' : '#E74C3C', fontWeight: '600' }}>
+                {isAddition ? '+' : '-'}
+                {count.toLocaleString('en-us')}
+              </p>
             </div>
           </div>
 
@@ -98,20 +94,13 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
   };
 
   useNuiEvent<[item: SlotWithItem, text: string, count?: number]>('itemNotify', ([item, text, count]) => {
-    const lowerText = Locale[text]?.toLowerCase() || text.toLowerCase();
-    const isAddition = !(
-      lowerText.includes('remov') ||
-      lowerText.includes('drop') ||
-      lowerText.includes('lost') ||
-      lowerText.includes('gave') ||
-      lowerText.includes('used')
-    );
+    const isAddition = text === 'ui_added';
 
     add({
       item: item,
       text: Locale[text] || text,
       isAddition: isAddition,
-      count: count,
+      count: count || 1,
     });
   });
 

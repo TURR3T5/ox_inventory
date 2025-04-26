@@ -25,7 +25,7 @@ const SegmentedWeightBar: React.FC<SegmentedWeightBarProps> = ({ weight, maxWeig
     <div className="weight-bar-container">
       <div className="weight-text">
         <SectionHeader title={title} />
-        <span>{weight.toFixed(2)}KG</span>
+        <span>{weight.toFixed(2)}/{maxWeight.toFixed(2)} KG</span>
       </div>
       <div className="weight-bar">
         {Array.from({ length: segments }).map((_, index) => (
