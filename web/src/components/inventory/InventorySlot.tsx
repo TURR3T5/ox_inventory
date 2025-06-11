@@ -16,6 +16,7 @@ import { closeTooltip, openTooltip } from '../../store/tooltip';
 import { closeContextMenu, openContextMenu } from '../../store/contextMenu';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { getRarityFromMetadata, getRarityConfig } from '../utils/rarity';
 
 interface SlotProps {
   inventoryId: Inventory['id'];
@@ -31,6 +32,9 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
   const manager = useDragDropManager();
   const dispatch = useAppDispatch();
   const timerRef = useRef<number | null>(null);
+
+  const rarity = getRarityFromMetadata(item.metadata);
+  const rarityConfig = getRarityConfig(rarity);
 
   const canDrag = useCallback(() => {
     return canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) && canCraftItem(item, inventoryType);
@@ -128,27 +132,63 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
       onUse(item);
     }
   };
+
   return (
     <motion.div
       ref={connectRef}
       onContextMenu={handleContext}
       onClick={handleClick}
-      className={cn('inventory-slot', {
-        'brightness-75 grayscale':
-          !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) ||
-          !canCraftItem(item, inventoryType),
-        'border-dashed border-white/40': isOver,
-      })}
+      className={cn(
+        'relative bg-gradient-to-br from-cyber-card to-cyber-card-dark rounded-lg',
+        'border-2 transition-all duration-500 transform-gpu',
+        'hover:scale-105 hover:shadow-2xl cursor-pointer',
+        'min-h-[10.2vh] min-w-[10.2vh]',
+        {
+          'brightness-75 grayscale':
+            !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) ||
+            !canCraftItem(item, inventoryType),
+          'border-cyber-accent shadow-lg shadow-cyber-accent/25': isOver,
+          'border-cyber-border': !isOver && isSlotWithItem(item),
+          'border-cyber-border/50': !isOver && !isSlotWithItem(item),
+          'skew-y-[-2deg]': true,
+        }
+      )}
       style={{
         opacity: isDragging ? 0.4 : 1.0,
-        backgroundImage: `url(${item?.name ? getItemUrl(item as SlotWithItem) : 'none'}`,
+        backgroundImage: item?.name ? `url(${getItemUrl(item as SlotWithItem)})` : 'none',
+        backgroundSize: '70%',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        borderColor: isSlotWithItem(item) ? rarityConfig.borderColor : undefined,
+        boxShadow: isSlotWithItem(item)
+          ? `0 0 20px ${rarityConfig.glowColor}, 0 4px 20px rgba(0,0,0,0.3)`
+          : '0 4px 20px rgba(0,0,0,0.3)',
       }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: isSlotWithItem(item)
+          ? `0 0 30px ${rarityConfig.glowColor}, 0 8px 30px rgba(0,0,0,0.4)`
+          : '0 8px 30px rgba(0,0,0,0.4)',
+      }}
+      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
     >
+      {/* Rarity Border Glow */}
+      {isSlotWithItem(item) && rarity !== 'common' && (
+        <div
+          className="absolute inset-0 rounded-lg opacity-30 pointer-events-none"
+          style={{
+            background: `linear-gradient(45deg, ${rarityConfig.glowColor}, transparent 70%)`,
+            animation: 'pulse 2s ease-in-out infinite',
+          }}
+        />
+      )}
+
       {isSlotWithItem(item) && (
         <div
-          className="flex flex-col justify-between h-full"
+          className="absolute inset-0 flex flex-col justify-between h-full p-1 rounded-lg"
           onMouseEnter={() => {
             timerRef.current = window.setTimeout(() => {
               dispatch(openTooltip({ item, inventoryType }));
@@ -162,55 +202,62 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             }
           }}
         >
+          {/* Top Row */}
           <div
             className={cn(
               'flex flex-row',
               inventoryType === 'player' && item.slot <= 5 ? 'justify-between' : 'justify-end'
             )}
           >
+            {/* Hotbar Number */}
             {inventoryType === 'player' && item.slot <= 5 && (
-              <div className="bg-white text-black min-h-[12px] min-w-[12px] rounded-tl-sm rounded-br-sm px-0.5 text-xs font-sans flex items-center justify-center leading-none">
+              <div className="bg-cyber-accent text-cyber-bg min-h-[16px] min-w-[16px] rounded-sm px-1 text-xs font-bold flex items-center justify-center shadow-lg transform -skew-y-2">
                 {item.slot}
               </div>
             )}
-            <div className="flex flex-row self-end px-1 py-0.5 gap-1 text-xs">
+
+            {/* Weight & Count */}
+            <div className="flex flex-row gap-1 text-xs font-semibold text-cyber-text-bright drop-shadow-lg">
               <p>
                 {item.weight > 0
                   ? item.weight >= 1000
                     ? `${(item.weight / 1000).toLocaleString('en-us', {
                         minimumFractionDigits: 2,
-                      })}kg `
+                      })}kg`
                     : `${item.weight.toLocaleString('en-us', {
                         minimumFractionDigits: 0,
-                      })}g `
+                      })}g`
                   : ''}
               </p>
               <p>{item.count ? item.count.toLocaleString('en-us') + `x` : ''}</p>
             </div>
           </div>
-          <div>
+
+          {/* Bottom Section */}
+          <div className="space-y-1">
+            {/* Durability Bar */}
             {inventoryType !== 'shop' && item?.durability !== undefined && (
               <WeightBar percent={item.durability} durability />
             )}
+
+            {/* Price for Shop Items */}
             {inventoryType === 'shop' && item?.price !== undefined && (
               <>
                 {item?.currency !== 'money' && item.currency !== 'black_money' && item.price > 0 && item.currency ? (
-                  <div className="flex flex-row justify-end items-center pr-1">
-                    <img
-                      src={item.currency ? getItemUrl(item.currency) : 'none'}
-                      alt="item-image"
-                      className="h-auto w-4 backface-hidden transform-gpu"
-                    />
-                    <p className="text-sm">{item.price.toLocaleString('en-us')}</p>
+                  <div className="flex flex-row justify-end items-center gap-1">
+                    <img src={item.currency ? getItemUrl(item.currency) : 'none'} alt="currency" className="h-4 w-4" />
+                    <p className="text-xs font-bold text-cyber-accent drop-shadow">
+                      {item.price.toLocaleString('en-us')}
+                    </p>
                   </div>
                 ) : (
                   <>
                     {item.price > 0 && (
                       <div
-                        className="flex flex-row justify-end pr-1"
-                        style={{ color: item.currency === 'money' || !item.currency ? '#2ECC71' : '#E74C3C' }}
+                        className="flex flex-row justify-end"
+                        style={{ color: item.currency === 'money' || !item.currency ? '#10B981' : '#EF4444' }}
                       >
-                        <p className="text-sm shadow-text">
+                        <p className="text-xs font-bold drop-shadow">
                           {Locale.$ || '$'}
                           {item.price.toLocaleString('en-us')}
                         </p>
@@ -220,12 +267,32 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
                 )}
               </>
             )}
-            <div className="bg-game-primary text-game-text text-center rounded-bl-sm rounded-br-sm border-t border-black/20 border-inset">
-              <div className="uppercase whitespace-nowrap overflow-hidden text-ellipsis px-1 py-0.5 font-normal font-sans text-xs">
-                {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
+
+            {/* Item Label */}
+            <div className="bg-gradient-to-r from-cyber-bg/90 to-cyber-card-dark/90 backdrop-blur-sm rounded transform -skew-x-1 border-t border-cyber-border/30">
+              <div className="px-2 py-1 text-center">
+                <div className="text-xs font-bold text-cyber-text-bright uppercase truncate transform skew-x-1">
+                  {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
+                </div>
+                {/* Rarity Badge */}
+                {rarity !== 'common' && (
+                  <div
+                    className="text-[10px] font-semibold uppercase tracking-wider transform skew-x-1"
+                    style={{ color: rarityConfig.textColor }}
+                  >
+                    {rarityConfig.label}
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Empty Slot Design */}
+      {!isSlotWithItem(item) && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-cyber-border/30 rounded border-dashed" />
         </div>
       )}
     </motion.div>

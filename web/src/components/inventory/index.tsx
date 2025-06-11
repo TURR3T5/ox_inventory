@@ -48,22 +48,37 @@ const Inventory: React.FC = () => {
   return (
     <>
       <Fade in={inventoryVisible}>
-        <div className="fixed inset-0 flex items-center justify-center" onClick={handleClick}>
+        <div
+          className="fixed inset-0 bg-cyber-bg/30 backdrop-blur-sm flex items-center justify-center"
+          onClick={handleClick}
+        >
           <motion.div
-            className="flex flex-row justify-center items-center gap-5"
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            className="max-w-screen-2xl mx-auto px-5 w-full"
+            initial={{ scale: 0.8, opacity: 0, rotateX: -15 }}
+            animate={{ scale: 1, opacity: 1, rotateX: 0 }}
+            exit={{ scale: 0.8, opacity: 0, rotateX: 15 }}
+            transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
             onClick={(e) => e.stopPropagation()}
           >
             <InventoryContext>
-              <div className="flex flex-row justify-center items-center gap-5">
-                <LeftInventory />
-                <InventoryControl />
-                <RightInventory />
-                <Tooltip />
+              <div className="grid grid-cols-3 gap-8 items-start">
+                {/* Left Inventory */}
+                <div className="transform hover:scale-105 transition-transform duration-500">
+                  <LeftInventory />
+                </div>
+
+                {/* Center Control Panel */}
+                <div className="flex justify-center">
+                  <InventoryControl />
+                </div>
+
+                {/* Right Inventory */}
+                <div className="transform hover:scale-105 transition-transform duration-500">
+                  <RightInventory />
+                </div>
               </div>
+
+              <Tooltip />
             </InventoryContext>
           </motion.div>
         </div>

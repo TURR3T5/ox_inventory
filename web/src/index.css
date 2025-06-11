@@ -106,3 +106,53 @@
     @apply m-0;
   }
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #101113;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #74c0fc, #25262b);
+  border-radius: 4px;
+  border: 1px solid #25262b;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #74c0fc, #74c0fc80);
+}
+
+/* Cyberpunk Animations */
+@keyframes cyber-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 5px #74c0fc40, 0 0 10px #74c0fc20, 0 0 15px #74c0fc10;
+  }
+  50% { 
+    box-shadow: 0 0 10px #74c0fc60, 0 0 20px #74c0fc40, 0 0 30px #74c0fc20;
+  }
+}
+
+@keyframes rarity-glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.cyber-pulse {
+  animation: cyber-pulse 2s ease-in-out infinite;
+}
+
+.rarity-glow {
+  animation: rarity-glow 2s ease-in-out infinite;
+}
+
+/* Cyberpunk Grid Effects */
+.inventory-grid-cyber {
+  background: 
+    linear-gradient(90deg, transparent 24px, #25262b 25px, #25262b 26px, transparent 27px, transparent 74px, #25262b 75px, #25262b 76px, transparent 77px),
+    linear-gradient(#25262b 1px, transparent 1px);
+  background-size: 100px 100px;
+}

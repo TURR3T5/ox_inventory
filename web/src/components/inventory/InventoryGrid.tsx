@@ -6,6 +6,7 @@ import { getTotalWeight } from '../../helpers';
 import { useAppSelector } from '../../store';
 import { useIntersection } from '../../hooks/useIntersection';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 const PAGE_SIZE = 30;
 
@@ -26,31 +27,69 @@ const InventoryGrid: React.FC<{ inventory: Inventory }> = ({ inventory }) => {
   }, [entry]);
 
   return (
-    <div className={cn('flex flex-col gap-2', { 'pointer-events-none': isBusy })}>
-      <div>
-        <div className="flex flex-row justify-between items-center text-base">
-          <p>{inventory.label}</p>
+    <motion.div
+      className={cn('flex flex-col gap-6 max-w-screen-2xl mx-auto px-5', { 'pointer-events-none': isBusy })}
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Header with cyberpunk styling */}
+      <div className="transform -skew-y-1">
+        <div className="bg-gradient-to-r from-cyber-card to-cyber-card-dark p-6 rounded-lg border border-cyber-border shadow-lg">
+          <div className="flex flex-row justify-between items-center transform skew-y-1">
+            <h2 className="text-2xl font-bold text-cyber-text-bright uppercase tracking-wider">{inventory.label}</h2>
+            {inventory.maxWeight && (
+              <div className="text-right">
+                <p className="text-lg font-bold text-cyber-accent">
+                  {weight / 1000}/{inventory.maxWeight / 1000}kg
+                </p>
+                <p className="text-xs text-cyber-text uppercase tracking-wider">Weight Capacity</p>
+              </div>
+            )}
+          </div>
+
           {inventory.maxWeight && (
-            <p>
-              {weight / 1000}/{inventory.maxWeight / 1000}kg
-            </p>
+            <div className="mt-4 transform skew-y-1">
+              <WeightBar
+                percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0}
+                className="h-2 rounded-full shadow-inner"
+              />
+            </div>
           )}
         </div>
-        <WeightBar percent={inventory.maxWeight ? (weight / inventory.maxWeight) * 100 : 0} />
       </div>
-      <div className="inventory-grid" ref={containerRef}>
+
+      {/* Grid Container */}
+      <div
+        className="grid grid-cols-5 gap-3 overflow-y-auto pr-2 max-h-[60vh] custom-scrollbar"
+        ref={containerRef}
+        style={{
+          gridAutoRows: 'minmax(10.2vh, auto)',
+        }}
+      >
         {inventory.items.slice(0, (page + 1) * PAGE_SIZE).map((item, index) => (
-          <InventorySlot
+          <motion.div
             key={`${inventory.type}-${inventory.id}-${item.slot}`}
-            item={item}
-            ref={index === (page + 1) * PAGE_SIZE - 1 ? ref : null}
-            inventoryType={inventory.type}
-            inventoryGroups={inventory.groups}
-            inventoryId={inventory.id}
-          />
+            initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{
+              duration: 0.4,
+              delay: index * 0.02,
+              type: 'spring',
+              stiffness: 100,
+            }}
+          >
+            <InventorySlot
+              item={item}
+              ref={index === (page + 1) * PAGE_SIZE - 1 ? ref : null}
+              inventoryType={inventory.type}
+              inventoryGroups={inventory.groups}
+              inventoryId={inventory.id}
+            />
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
