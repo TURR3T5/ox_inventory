@@ -13,7 +13,7 @@ import { onCraft } from '../../dnd/onCraft';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import { ItemsPayload } from '../../reducers/refreshSlots';
 import { closeTooltip, openTooltip } from '../../store/tooltip';
-import { openContextMenu } from '../../store/contextMenu';
+import { closeContextMenu, openContextMenu } from '../../store/contextMenu';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -119,6 +119,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    dispatch(closeContextMenu());
     dispatch(closeTooltip());
     if (timerRef.current) clearTimeout(timerRef.current);
     if (event.ctrlKey && isSlotWithItem(item) && inventoryType !== 'shop' && inventoryType !== 'crafting') {
@@ -127,7 +128,6 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
       onUse(item);
     }
   };
-
   return (
     <motion.div
       ref={connectRef}
@@ -169,7 +169,7 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             )}
           >
             {inventoryType === 'player' && item.slot <= 5 && (
-              <div className="bg-white text-black h-3 rounded-tl-sm rounded-br-sm px-1 py-0.5 text-xs font-sans">
+              <div className="bg-white text-black min-h-[12px] min-w-[12px] rounded-tl-sm rounded-br-sm px-0.5 text-xs font-sans flex items-center justify-center leading-none">
                 {item.slot}
               </div>
             )}

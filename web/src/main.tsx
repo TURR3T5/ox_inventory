@@ -12,10 +12,11 @@ import { isEnvBrowser } from './utils/misc';
 const root = document.getElementById('root');
 
 if (isEnvBrowser()) {
-  root!.style.backgroundImage = 'url("https://i.imgur.com/3pzRj9n.png")';
-  root!.style.backgroundSize = 'cover';
-  root!.style.backgroundRepeat = 'no-repeat';
-  root!.style.backgroundPosition = 'center';
+  document.body.style.backgroundImage = 'url("https://i.imgur.com/3pzRj9n.png")';
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundRepeat = 'no-repeat';
+  document.body.style.backgroundPosition = 'center';
+  document.body.style.backgroundAttachment = 'fixed';
 }
 
 createRoot(root!).render(

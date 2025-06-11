@@ -8,16 +8,6 @@ import { isSlotWithItem } from '../../helpers';
 import { setClipboard } from '../../utils/setClipboard';
 import { useAppSelector } from '../../store';
 import React from 'react';
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu';
 
 interface DataProps {
   action: string;
@@ -98,76 +88,109 @@ const InventoryContext: React.FC<{ children: React.ReactNode }> = ({ children })
     }, []);
   };
 
+  const itemData = item?.name ? Items[item.name] : undefined;
+  const hasButtons = itemData?.buttons && itemData.buttons.length > 0;
+
   return (
-    <ContextMenu>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-48 bg-game-primary border-black/20">
-        <ContextMenuItem onClick={() => handleClick({ action: 'use' })}>{Locale.ui_use || 'Use'}</ContextMenuItem>
-        <ContextMenuItem onClick={() => handleClick({ action: 'give' })}>{Locale.ui_give || 'Give'}</ContextMenuItem>
-        <ContextMenuItem onClick={() => handleClick({ action: 'drop' })}>{Locale.ui_drop || 'Drop'}</ContextMenuItem>
-        {item && item.metadata?.ammo > 0 && (
-          <ContextMenuItem onClick={() => handleClick({ action: 'removeAmmo' })}>
-            {Locale.ui_remove_ammo}
-          </ContextMenuItem>
-        )}
-        {item && item.metadata?.serial && (
-          <ContextMenuItem onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}>
-            {Locale.ui_copy}
-          </ContextMenuItem>
-        )}
-        {item && item.metadata?.components && item.metadata?.components.length > 0 && (
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>{Locale.ui_removeattachments}</ContextMenuSubTrigger>
-            <ContextMenuSubContent>
-              {item &&
-                item.metadata?.components.map((component: string, index: number) => (
-                  <ContextMenuItem
+    <>
+      {children}
+      {contextMenu.coords && item && (
+        <div
+          className="fixed z-50 min-w-48 bg-game-primary text-game-text p-1 border border-black/20 rounded shadow-lg"
+          style={{
+            left: contextMenu.coords.x,
+            top: contextMenu.coords.y,
+          }}
+        >
+          <div className="flex flex-col">
+            <button
+              className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
+              onClick={() => handleClick({ action: 'use' })}
+            >
+              {Locale.ui_use || 'Use'}
+            </button>
+            <button
+              className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
+              onClick={() => handleClick({ action: 'give' })}
+            >
+              {Locale.ui_give || 'Give'}
+            </button>
+            <button
+              className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
+              onClick={() => handleClick({ action: 'drop' })}
+            >
+              {Locale.ui_drop || 'Drop'}
+            </button>
+
+            {item.metadata?.ammo && item.metadata.ammo > 0 && (
+              <button
+                className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
+                onClick={() => handleClick({ action: 'removeAmmo' })}
+              >
+                {Locale.ui_remove_ammo}
+              </button>
+            )}
+
+            {item.metadata?.serial && (
+              <button
+                className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
+                onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}
+              >
+                {Locale.ui_copy}
+              </button>
+            )}
+
+            {item.metadata?.components && item.metadata.components.length > 0 && (
+              <div className="border-t border-white/12 my-1 pt-1">
+                <div className="px-2 py-1.5 text-sm font-semibold">{Locale.ui_removeattachments}</div>
+                {item.metadata.components.map((component: string, index: number) => (
+                  <button
                     key={index}
+                    className="px-4 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer w-full"
                     onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
                   >
                     {Items[component]?.label || ''}
-                  </ContextMenuItem>
+                  </button>
                 ))}
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-        )}
-        {((item && item.name && Items[item.name]?.buttons?.length) || 0) > 0 && (
-          <>
-            <ContextMenuSeparator />
-            {item &&
-              item.name &&
-              groupButtons(Items[item.name]?.buttons).map((group: Group, index: number) => (
-                <React.Fragment key={index}>
-                  {group.groupName ? (
-                    <ContextMenuSub>
-                      <ContextMenuSubTrigger>{group.groupName}</ContextMenuSubTrigger>
-                      <ContextMenuSubContent>
+              </div>
+            )}
+
+            {hasButtons && (
+              <div className="border-t border-white/12 my-1 pt-1">
+                {groupButtons(itemData.buttons).map((group: Group, index: number) => (
+                  <div key={index}>
+                    {group.groupName ? (
+                      <div>
+                        <div className="px-2 py-1.5 text-sm font-semibold">{group.groupName}</div>
                         {group.buttons.map((button: Button) => (
-                          <ContextMenuItem
+                          <button
                             key={button.index}
+                            className="px-4 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer w-full"
                             onClick={() => handleClick({ action: 'custom', id: button.index })}
                           >
                             {button.label}
-                          </ContextMenuItem>
+                          </button>
                         ))}
-                      </ContextMenuSubContent>
-                    </ContextMenuSub>
-                  ) : (
-                    group.buttons.map((button: Button) => (
-                      <ContextMenuItem
-                        key={button.index}
-                        onClick={() => handleClick({ action: 'custom', id: button.index })}
-                      >
-                        {button.label}
-                      </ContextMenuItem>
-                    ))
-                  )}
-                </React.Fragment>
-              ))}
-          </>
-        )}
-      </ContextMenuContent>
-    </ContextMenu>
+                      </div>
+                    ) : (
+                      group.buttons.map((button: Button) => (
+                        <button
+                          key={button.index}
+                          className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer w-full"
+                          onClick={() => handleClick({ action: 'custom', id: button.index })}
+                        >
+                          {button.label}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

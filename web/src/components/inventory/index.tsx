@@ -41,25 +41,32 @@ const Inventory: React.FC = () => {
     dispatch(setAdditionalMetadata(data));
   });
 
+  const handleClick = () => {
+    dispatch(closeContextMenu());
+  };
+
   return (
     <>
       <Fade in={inventoryVisible}>
-        <motion.div
-          className="flex flex-row justify-center items-center h-full gap-5"
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <InventoryContext>
-            <div className="flex flex-row justify-center items-center h-full gap-5">
-              <LeftInventory />
-              <InventoryControl />
-              <RightInventory />
-              <Tooltip />
-            </div>
-          </InventoryContext>
-        </motion.div>
+        <div className="fixed inset-0 flex items-center justify-center" onClick={handleClick}>
+          <motion.div
+            className="flex flex-row justify-center items-center gap-5"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <InventoryContext>
+              <div className="flex flex-row justify-center items-center gap-5">
+                <LeftInventory />
+                <InventoryControl />
+                <RightInventory />
+                <Tooltip />
+              </div>
+            </InventoryContext>
+          </motion.div>
+        </div>
       </Fade>
       <InventoryHotbar />
     </>

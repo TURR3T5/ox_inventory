@@ -38,7 +38,7 @@ const InventoryHotbar: React.FC = () => {
             {isSlotWithItem(item) && (
               <div className="flex flex-col justify-between h-full">
                 <div className="flex flex-row justify-between">
-                  <div className="bg-white text-black h-3 rounded-tl-sm rounded-br-sm px-1 py-0.5 text-xs font-sans">
+                  <div className="bg-white text-black min-h-[12px] min-w-[12px] rounded-tl-sm rounded-br-sm px-0.5 text-xs font-sans flex items-center justify-center leading-none">
                     {item.slot}
                   </div>
                   <div className="flex flex-row self-end px-1 py-0.5 gap-1 text-xs">

@@ -44,7 +44,7 @@ const SlotTooltip: React.FC<SlotTooltipProps> = ({ item, inventoryType, classNam
   return (
     <div
       className={cn(
-        'pointer-events-none flex bg-game-primary w-50 p-2 flex-col min-w-50 text-game-text font-sans rounded border border-black/20 border-inset',
+        'pointer-events-none flex bg-game-primary w-50 p-2 flex-col min-w-50 text-game-text font-sans rounded',
         className
       )}
     >
