@@ -8,7 +8,16 @@ import { isSlotWithItem } from '../../helpers';
 import { setClipboard } from '../../utils/setClipboard';
 import { useAppSelector } from '../../store';
 import React from 'react';
-import { Menu, MenuItem } from '../utils/menu/Menu';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 
 interface DataProps {
   action: string;
@@ -35,7 +44,7 @@ interface ButtonWithIndex extends Button {
 
 interface GroupedButtons extends Array<Group> {}
 
-const InventoryContext: React.FC = () => {
+const InventoryContext: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const contextMenu = useAppSelector((state) => state.contextMenu);
   const item = contextMenu.item;
 
@@ -90,63 +99,75 @@ const InventoryContext: React.FC = () => {
   };
 
   return (
-    <>
-      <Menu>
-        <MenuItem onClick={() => handleClick({ action: 'use' })} label={Locale.ui_use || 'Use'} />
-        <MenuItem onClick={() => handleClick({ action: 'give' })} label={Locale.ui_give || 'Give'} />
-        <MenuItem onClick={() => handleClick({ action: 'drop' })} label={Locale.ui_drop || 'Drop'} />
+    <ContextMenu>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuContent className="w-48 bg-game-primary border-black/20">
+        <ContextMenuItem onClick={() => handleClick({ action: 'use' })}>{Locale.ui_use || 'Use'}</ContextMenuItem>
+        <ContextMenuItem onClick={() => handleClick({ action: 'give' })}>{Locale.ui_give || 'Give'}</ContextMenuItem>
+        <ContextMenuItem onClick={() => handleClick({ action: 'drop' })}>{Locale.ui_drop || 'Drop'}</ContextMenuItem>
         {item && item.metadata?.ammo > 0 && (
-          <MenuItem onClick={() => handleClick({ action: 'removeAmmo' })} label={Locale.ui_remove_ammo} />
+          <ContextMenuItem onClick={() => handleClick({ action: 'removeAmmo' })}>
+            {Locale.ui_remove_ammo}
+          </ContextMenuItem>
         )}
         {item && item.metadata?.serial && (
-          <MenuItem
-            onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}
-            label={Locale.ui_copy}
-          />
+          <ContextMenuItem onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}>
+            {Locale.ui_copy}
+          </ContextMenuItem>
         )}
         {item && item.metadata?.components && item.metadata?.components.length > 0 && (
-          <Menu label={Locale.ui_removeattachments}>
-            {item &&
-              item.metadata?.components.map((component: string, index: number) => (
-                <MenuItem
-                  key={index}
-                  onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
-                  label={Items[component]?.label || ''}
-                />
-              ))}
-          </Menu>
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>{Locale.ui_removeattachments}</ContextMenuSubTrigger>
+            <ContextMenuSubContent>
+              {item &&
+                item.metadata?.components.map((component: string, index: number) => (
+                  <ContextMenuItem
+                    key={index}
+                    onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
+                  >
+                    {Items[component]?.label || ''}
+                  </ContextMenuItem>
+                ))}
+            </ContextMenuSubContent>
+          </ContextMenuSub>
         )}
         {((item && item.name && Items[item.name]?.buttons?.length) || 0) > 0 && (
           <>
+            <ContextMenuSeparator />
             {item &&
               item.name &&
               groupButtons(Items[item.name]?.buttons).map((group: Group, index: number) => (
                 <React.Fragment key={index}>
                   {group.groupName ? (
-                    <Menu label={group.groupName}>
-                      {group.buttons.map((button: Button) => (
-                        <MenuItem
-                          key={button.index}
-                          onClick={() => handleClick({ action: 'custom', id: button.index })}
-                          label={button.label}
-                        />
-                      ))}
-                    </Menu>
+                    <ContextMenuSub>
+                      <ContextMenuSubTrigger>{group.groupName}</ContextMenuSubTrigger>
+                      <ContextMenuSubContent>
+                        {group.buttons.map((button: Button) => (
+                          <ContextMenuItem
+                            key={button.index}
+                            onClick={() => handleClick({ action: 'custom', id: button.index })}
+                          >
+                            {button.label}
+                          </ContextMenuItem>
+                        ))}
+                      </ContextMenuSubContent>
+                    </ContextMenuSub>
                   ) : (
                     group.buttons.map((button: Button) => (
-                      <MenuItem
+                      <ContextMenuItem
                         key={button.index}
                         onClick={() => handleClick({ action: 'custom', id: button.index })}
-                        label={button.label}
-                      />
+                      >
+                        {button.label}
+                      </ContextMenuItem>
                     ))
                   )}
                 </React.Fragment>
               ))}
           </>
         )}
-      </Menu>
-    </>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };
 

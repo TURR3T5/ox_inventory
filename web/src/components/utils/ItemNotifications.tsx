@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { createPortal } from 'react-dom';
-import { TransitionGroup } from 'react-transition-group';
+import { AnimatePresence, motion } from 'framer-motion';
 import useNuiEvent from '../../hooks/useNuiEvent';
 import useQueue from '../../hooks/useQueue';
 import { Locale } from '../../store/locale';
 import { getItemUrl } from '../../helpers';
 import { SlotWithItem } from '../../typings';
 import { Items } from '../../store/items';
-import Fade from './transitions/Fade';
 
 interface ItemNotificationProps {
   item: SlotWithItem;
@@ -24,28 +23,33 @@ export const useItemNotifications = () => {
   return itemNotificationsContext;
 };
 
-const ItemNotification = React.forwardRef(
-  (props: { item: ItemNotificationProps; style?: React.CSSProperties }, ref: React.ForwardedRef<HTMLDivElement>) => {
+const ItemNotification = React.forwardRef<HTMLDivElement, { item: ItemNotificationProps; style?: React.CSSProperties }>(
+  (props, ref) => {
     const slotItem = props.item.item;
 
     return (
-      <div
-        className="item-notification-item-box"
+      <motion.div
+        ref={ref}
+        className="inventory-slot"
         style={{
           backgroundImage: `url(${getItemUrl(slotItem) || 'none'}`,
           ...props.style,
         }}
-        ref={ref}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
       >
-        <div className="item-slot-wrapper">
-          <div className="item-notification-action-box">
-            <p>{props.item.text}</p>
+        <div className="flex flex-col justify-between h-full">
+          <div className="w-full text-game-text bg-game-secondary uppercase text-center rounded-tl-sm rounded-tr-sm font-sans">
+            <p className="text-xs px-0.5 py-0.5 font-semibold">{props.item.text}</p>
           </div>
-          <div className="inventory-slot-label-box">
-            <div className="inventory-slot-label-text">{slotItem.metadata?.label || Items[slotItem.name]?.label}</div>
+          <div className="bg-game-primary text-game-text text-center rounded-bl-sm rounded-br-sm border-t border-black/20 border-inset">
+            <div className="uppercase whitespace-nowrap overflow-hidden text-ellipsis px-1 py-0.5 font-normal font-sans text-xs">
+              {slotItem.metadata?.label || Items[slotItem.name]?.label}
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 );
@@ -77,13 +81,16 @@ export const ItemNotificationsProvider = ({ children }: { children: React.ReactN
     <ItemNotificationsContext.Provider value={{ add }}>
       {children}
       {createPortal(
-        <TransitionGroup className="item-notification-container">
-          {queue.values.map((notification, index) => (
-            <Fade key={`item-notification-${index}`}>
-              <ItemNotification item={notification.item} ref={notification.ref} />
-            </Fade>
-          ))}
-        </TransitionGroup>,
+        <div
+          className="flex overflow-x-scroll flex-nowrap gap-0.5 absolute bottom-80 left-1/2 w-full transform -translate-x-1/2"
+          style={{ marginLeft: 'calc(50% - 5.1vh)' }}
+        >
+          <AnimatePresence>
+            {queue.values.map((notification, index) => (
+              <ItemNotification key={`item-notification-${index}`} item={notification.item} ref={notification.ref} />
+            ))}
+          </AnimatePresence>
+        </div>,
         document.body
       )}
     </ItemNotificationsContext.Provider>

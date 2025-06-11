@@ -11,6 +11,7 @@ import DragPreview from './components/utils/DragPreview';
 import { fetchNui } from './utils/fetchNui';
 import { useDragDropManager } from 'react-dnd';
 import KeyPress from './components/utils/KeyPress';
+import { useEffect } from 'react';
 
 debugData([
   {
@@ -91,6 +92,16 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const manager = useDragDropManager();
 
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX + 10}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY + 10}px`);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   useNuiEvent<{
     locale: { [key: string]: string };
     items: typeof Items;
@@ -111,7 +122,7 @@ const App: React.FC = () => {
   });
 
   return (
-    <div className="app-wrapper">
+    <div className="h-full w-full text-white">
       <InventoryComponent />
       <DragPreview />
       <KeyPress />
@@ -119,8 +130,8 @@ const App: React.FC = () => {
   );
 };
 
-addEventListener("dragstart", function(event) {
-  event.preventDefault()
-})
+addEventListener('dragstart', function (event) {
+  event.preventDefault();
+});
 
 export default App;

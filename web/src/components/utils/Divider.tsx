@@ -1,7 +1,12 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
-const Divider: React.FC = () => {
-  return <div className="divider" />;
+interface DividerProps {
+  className?: string;
+}
+
+const Divider: React.FC<DividerProps> = ({ className }) => {
+  return <div className={cn('w-full h-px bg-white/12', className)} />;
 };
 
 export default Divider;

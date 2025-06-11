@@ -1,6 +1,7 @@
 import React, { RefObject, useRef } from 'react';
 import { DragLayerMonitor, useDragLayer, XYCoord } from 'react-dnd';
 import { DragSource } from '../../typings';
+import { motion } from 'framer-motion';
 
 interface DragLayerProps {
   data: DragSource;
@@ -51,13 +52,19 @@ const DragPreview: React.FC = () => {
   return (
     <>
       {isDragging && currentOffset && data.item && (
-        <div
-          className="item-drag-preview"
+        <motion.div
           ref={element}
+          className="fixed z-50 pointer-events-none top-0 left-0 bg-no-repeat bg-center transform-gpu"
           style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             backgroundImage: data.image,
+            backgroundSize: '7vh',
+            width: '7.7vh',
+            height: '7.7vh',
+            imageRendering: '-webkit-optimize-contrast',
           }}
+          initial={{ scale: 0.8, opacity: 0.8 }}
+          animate={{ scale: 1, opacity: 1 }}
         />
       )}
     </>

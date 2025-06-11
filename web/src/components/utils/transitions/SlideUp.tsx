@@ -1,18 +1,20 @@
-import React, { useRef } from 'react';
-import { CSSTransition } from 'react-transition-group';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-interface Props {
+interface SlideUpProps {
   in?: boolean;
   children: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 }
 
-const SlideUp: React.FC<Props> = (props) => {
-  const nodeRef = useRef(null);
-
+const SlideUp: React.FC<SlideUpProps> = ({ in: isVisible = true, children }) => {
   return (
-    <CSSTransition nodeRef={nodeRef} in={props.in} timeout={200} classNames="transition-slide-up" unmountOnExit>
-      {React.cloneElement(props.children, { ref: nodeRef })}
-    </CSSTransition>
+    <AnimatePresence mode="wait">
+      {isVisible && (
+        <motion.div initial={{ y: 200 }} animate={{ y: 0 }} exit={{ y: 200 }} transition={{ duration: 0.2 }}>
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
