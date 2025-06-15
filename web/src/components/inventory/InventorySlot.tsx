@@ -139,24 +139,24 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
       onContextMenu={handleContext}
       onClick={handleClick}
       className={cn(
-        'relative bg-gradient-to-br from-cyber-card to-cyber-card-dark rounded-lg',
-        'border-2 transition-all duration-500 transform-gpu',
-        'hover:scale-105 hover:shadow-2xl cursor-pointer',
-        'min-h-[10.2vh] min-w-[10.2vh]',
+        'relative rounded-lg border-2 transition-all duration-500 transform-gpu cursor-pointer',
+        'min-h-[80px] min-w-[80px] overflow-hidden',
         {
+          'bg-gradient-to-br from-cyber-card to-cyber-card-dark': !isSlotWithItem(item),
+          'bg-gradient-to-br from-cyber-card/90 to-cyber-card-dark/90': isSlotWithItem(item),
           'brightness-75 grayscale':
             !canPurchaseItem(item, { type: inventoryType, groups: inventoryGroups }) ||
             !canCraftItem(item, inventoryType),
-          'border-cyber-accent shadow-lg shadow-cyber-accent/25': isOver,
+          'border-cyber-accent shadow-lg shadow-cyber-accent/25 scale-105': isOver,
           'border-cyber-border': !isOver && isSlotWithItem(item),
           'border-cyber-border/50': !isOver && !isSlotWithItem(item),
-          'skew-y-[-2deg]': true,
+          'hover:scale-105 hover:shadow-xl': true,
         }
       )}
       style={{
         opacity: isDragging ? 0.4 : 1.0,
         backgroundImage: item?.name ? `url(${getItemUrl(item as SlotWithItem)})` : 'none',
-        backgroundSize: '70%',
+        backgroundSize: '60%',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         borderColor: isSlotWithItem(item) ? rarityConfig.borderColor : undefined,
@@ -178,10 +178,9 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
       {/* Rarity Border Glow */}
       {isSlotWithItem(item) && rarity !== 'common' && (
         <div
-          className="absolute inset-0 rounded-lg opacity-30 pointer-events-none"
+          className="absolute inset-0 rounded-lg opacity-30 pointer-events-none rarity-glow"
           style={{
             background: `linear-gradient(45deg, ${rarityConfig.glowColor}, transparent 70%)`,
-            animation: 'pulse 2s ease-in-out infinite',
           }}
         />
       )}
@@ -202,21 +201,18 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             }
           }}
         >
-          {/* Top Row */}
           <div
             className={cn(
               'flex flex-row',
               inventoryType === 'player' && item.slot <= 5 ? 'justify-between' : 'justify-end'
             )}
           >
-            {/* Hotbar Number */}
             {inventoryType === 'player' && item.slot <= 5 && (
-              <div className="bg-cyber-accent text-cyber-bg min-h-[16px] min-w-[16px] rounded-sm px-1 text-xs font-bold flex items-center justify-center shadow-lg transform -skew-y-2">
+              <div className="bg-cyber-accent text-cyber-bg min-h-[16px] min-w-[16px] rounded-sm px-1 text-xs font-bold flex items-center justify-center shadow-lg">
                 {item.slot}
               </div>
             )}
 
-            {/* Weight & Count */}
             <div className="flex flex-row gap-1 text-xs font-semibold text-cyber-text-bright drop-shadow-lg">
               <p>
                 {item.weight > 0
@@ -233,14 +229,11 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
             </div>
           </div>
 
-          {/* Bottom Section */}
           <div className="space-y-1">
-            {/* Durability Bar */}
             {inventoryType !== 'shop' && item?.durability !== undefined && (
               <WeightBar percent={item.durability} durability />
             )}
 
-            {/* Price for Shop Items */}
             {inventoryType === 'shop' && item?.price !== undefined && (
               <>
                 {item?.currency !== 'money' && item.currency !== 'black_money' && item.price > 0 && item.currency ? (
@@ -268,16 +261,14 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
               </>
             )}
 
-            {/* Item Label */}
-            <div className="bg-gradient-to-r from-cyber-bg/90 to-cyber-card-dark/90 backdrop-blur-sm rounded transform -skew-x-1 border-t border-cyber-border/30">
+            <div className="bg-gradient-to-r from-cyber-bg/90 to-cyber-card-dark/90 backdrop-blur-sm rounded border-t border-cyber-border/30">
               <div className="px-2 py-1 text-center">
-                <div className="text-xs font-bold text-cyber-text-bright uppercase truncate transform skew-x-1">
+                <div className="text-xs font-bold text-cyber-text-bright uppercase truncate">
                   {item.metadata?.label ? item.metadata.label : Items[item.name]?.label || item.name}
                 </div>
-                {/* Rarity Badge */}
                 {rarity !== 'common' && (
                   <div
-                    className="text-[10px] font-semibold uppercase tracking-wider transform skew-x-1"
+                    className="text-[10px] font-semibold uppercase tracking-wider"
                     style={{ color: rarityConfig.textColor }}
                   >
                     {rarityConfig.label}
@@ -289,7 +280,6 @@ const InventorySlot: React.ForwardRefRenderFunction<HTMLDivElement, SlotProps> =
         </div>
       )}
 
-      {/* Empty Slot Design */}
       {!isSlotWithItem(item) && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-cyber-border/30 rounded border-dashed" />

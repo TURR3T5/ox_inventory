@@ -8,6 +8,8 @@ import { isSlotWithItem } from '../../helpers';
 import { setClipboard } from '../../utils/setClipboard';
 import { useAppSelector } from '../../store';
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface DataProps {
   action: string;
@@ -94,102 +96,160 @@ const InventoryContext: React.FC<{ children: React.ReactNode }> = ({ children })
   return (
     <>
       {children}
-      {contextMenu.coords && item && (
-        <div
-          className="fixed z-50 min-w-48 bg-game-primary text-game-text p-1 border border-black/20 rounded shadow-lg"
-          style={{
-            left: contextMenu.coords.x,
-            top: contextMenu.coords.y,
-          }}
-        >
-          <div className="flex flex-col">
-            <button
-              className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
-              onClick={() => handleClick({ action: 'use' })}
-            >
-              {Locale.ui_use || 'Use'}
-            </button>
-            <button
-              className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
-              onClick={() => handleClick({ action: 'give' })}
-            >
-              {Locale.ui_give || 'Give'}
-            </button>
-            <button
-              className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
-              onClick={() => handleClick({ action: 'drop' })}
-            >
-              {Locale.ui_drop || 'Drop'}
-            </button>
-
-            {item.metadata?.ammo && item.metadata.ammo > 0 && (
+      <AnimatePresence>
+        {contextMenu.coords && item && (
+          <motion.div
+            className="fixed z-50 min-w-48 bg-gradient-to-br from-cyber-card to-cyber-card-dark border-2 border-cyber-border rounded-lg shadow-2xl backdrop-blur-sm p-2"
+            style={{
+              left: contextMenu.coords.x,
+              top: contextMenu.coords.y,
+            }}
+            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex flex-col space-y-1">
               <button
-                className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
-                onClick={() => handleClick({ action: 'removeAmmo' })}
+                className={cn(
+                  'px-3 py-2 text-sm text-left text-cyber-text-bright font-medium',
+                  'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200',
+                  'flex items-center gap-2'
+                )}
+                onClick={() => handleClick({ action: 'use' })}
               >
-                {Locale.ui_remove_ammo}
+                <span className="w-4 h-4 bg-cyber-accent/20 rounded flex items-center justify-center text-xs">⚡</span>
+                {Locale.ui_use || 'Use'}
               </button>
-            )}
 
-            {item.metadata?.serial && (
               <button
-                className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer"
-                onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}
+                className={cn(
+                  'px-3 py-2 text-sm text-left text-cyber-text-bright font-medium',
+                  'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200',
+                  'flex items-center gap-2'
+                )}
+                onClick={() => handleClick({ action: 'give' })}
               >
-                {Locale.ui_copy}
+                <span className="w-4 h-4 bg-cyber-accent/20 rounded flex items-center justify-center text-xs">🎁</span>
+                {Locale.ui_give || 'Give'}
               </button>
-            )}
 
-            {item.metadata?.components && item.metadata.components.length > 0 && (
-              <div className="border-t border-white/12 my-1 pt-1">
-                <div className="px-2 py-1.5 text-sm font-semibold">{Locale.ui_removeattachments}</div>
-                {item.metadata.components.map((component: string, index: number) => (
+              <button
+                className={cn(
+                  'px-3 py-2 text-sm text-left text-cyber-text-bright font-medium',
+                  'hover:bg-red-500 hover:text-white rounded transition-all duration-200',
+                  'flex items-center gap-2'
+                )}
+                onClick={() => handleClick({ action: 'drop' })}
+              >
+                <span className="w-4 h-4 bg-red-500/20 rounded flex items-center justify-center text-xs">📤</span>
+                {Locale.ui_drop || 'Drop'}
+              </button>
+
+              {item.metadata?.ammo && item.metadata.ammo > 0 && (
+                <>
+                  <div className="w-full h-px bg-cyber-border my-1" />
                   <button
-                    key={index}
-                    className="px-4 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer w-full"
-                    onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
+                    className={cn(
+                      'px-3 py-2 text-sm text-left text-cyber-text-bright font-medium',
+                      'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200',
+                      'flex items-center gap-2'
+                    )}
+                    onClick={() => handleClick({ action: 'removeAmmo' })}
                   >
-                    {Items[component]?.label || ''}
+                    <span className="w-4 h-4 bg-cyber-accent/20 rounded flex items-center justify-center text-xs">
+                      🔫
+                    </span>
+                    {Locale.ui_remove_ammo}
                   </button>
-                ))}
-              </div>
-            )}
+                </>
+              )}
 
-            {hasButtons && (
-              <div className="border-t border-white/12 my-1 pt-1">
-                {groupButtons(itemData.buttons).map((group: Group, index: number) => (
-                  <div key={index}>
-                    {group.groupName ? (
-                      <div>
-                        <div className="px-2 py-1.5 text-sm font-semibold">{group.groupName}</div>
-                        {group.buttons.map((button: Button) => (
+              {item.metadata?.serial && (
+                <>
+                  <div className="w-full h-px bg-cyber-border my-1" />
+                  <button
+                    className={cn(
+                      'px-3 py-2 text-sm text-left text-cyber-text-bright font-medium',
+                      'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200',
+                      'flex items-center gap-2'
+                    )}
+                    onClick={() => handleClick({ action: 'copy', serial: item.metadata?.serial })}
+                  >
+                    <span className="w-4 h-4 bg-cyber-accent/20 rounded flex items-center justify-center text-xs">
+                      📋
+                    </span>
+                    {Locale.ui_copy}
+                  </button>
+                </>
+              )}
+
+              {item.metadata?.components && item.metadata.components.length > 0 && (
+                <>
+                  <div className="w-full h-px bg-cyber-border my-1" />
+                  <div className="px-3 py-1 text-xs font-bold text-cyber-accent uppercase tracking-wider">
+                    {Locale.ui_removeattachments}
+                  </div>
+                  {item.metadata.components.map((component: string, index: number) => (
+                    <button
+                      key={index}
+                      className={cn(
+                        'px-6 py-2 text-sm text-left text-cyber-text-bright font-medium',
+                        'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200'
+                      )}
+                      onClick={() => handleClick({ action: 'remove', component, slot: item.slot })}
+                    >
+                      {Items[component]?.label || component}
+                    </button>
+                  ))}
+                </>
+              )}
+
+              {hasButtons && (
+                <>
+                  <div className="w-full h-px bg-cyber-border my-1" />
+                  {groupButtons(itemData.buttons).map((group: Group, index: number) => (
+                    <div key={index}>
+                      {group.groupName ? (
+                        <div>
+                          <div className="px-3 py-1 text-xs font-bold text-cyber-accent uppercase tracking-wider">
+                            {group.groupName}
+                          </div>
+                          {group.buttons.map((button: Button) => (
+                            <button
+                              key={button.index}
+                              className={cn(
+                                'px-6 py-2 text-sm text-left text-cyber-text-bright font-medium w-full',
+                                'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200'
+                              )}
+                              onClick={() => handleClick({ action: 'custom', id: button.index })}
+                            >
+                              {button.label}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        group.buttons.map((button: Button) => (
                           <button
                             key={button.index}
-                            className="px-4 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer w-full"
+                            className={cn(
+                              'px-3 py-2 text-sm text-left text-cyber-text-bright font-medium w-full',
+                              'hover:bg-cyber-accent hover:text-cyber-bg rounded transition-all duration-200'
+                            )}
                             onClick={() => handleClick({ action: 'custom', id: button.index })}
                           >
                             {button.label}
                           </button>
-                        ))}
-                      </div>
-                    ) : (
-                      group.buttons.map((button: Button) => (
-                        <button
-                          key={button.index}
-                          className="px-2 py-1.5 text-sm text-left hover:bg-game-secondary-highlight rounded cursor-pointer w-full"
-                          onClick={() => handleClick({ action: 'custom', id: button.index })}
-                        >
-                          {button.label}
-                        </button>
-                      ))
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+                        ))
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

@@ -6,8 +6,8 @@ import { useAppDispatch } from '../../store';
 import { refreshSlots, setAdditionalMetadata, setupInventory } from '../../store/inventory';
 import { useExitListener } from '../../hooks/useExitListener';
 import type { Inventory as InventoryProps } from '../../typings';
-import RightInventory from './RightInventory';
-import LeftInventory from './LeftInventory';
+import PlayerInventorySection from './PlayerInventorySection';
+import GroundInventory from './GroundInventory';
 import Tooltip from '../utils/Tooltip';
 import { closeTooltip } from '../../store/tooltip';
 import InventoryContext from './InventoryContext';
@@ -49,33 +49,31 @@ const Inventory: React.FC = () => {
     <>
       <Fade in={inventoryVisible}>
         <div
-          className="fixed inset-0 bg-cyber-bg/30 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 bg-cyber-bg/40 backdrop-blur-md flex items-center justify-center"
           onClick={handleClick}
         >
           <motion.div
-            className="max-w-screen-2xl mx-auto px-5 w-full"
-            initial={{ scale: 0.8, opacity: 0, rotateX: -15 }}
-            animate={{ scale: 1, opacity: 1, rotateX: 0 }}
-            exit={{ scale: 0.8, opacity: 0, rotateX: 15 }}
-            transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+            className="w-full h-full flex items-center justify-between px-8 py-6 max-w-[1800px]"
+            initial={{ scale: 0.9, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: -50 }}
+            transition={{ duration: 0.4, type: 'spring', stiffness: 120 }}
             onClick={(e) => e.stopPropagation()}
           >
             <InventoryContext>
-              <div className="grid grid-cols-3 gap-8 items-start">
-                {/* Left Inventory */}
-                <div className="transform hover:scale-105 transition-transform duration-500">
-                  <LeftInventory />
-                </div>
+              {/* Left - Player + Backpack */}
+              <div className="flex flex-col gap-6 flex-shrink-0">
+                <PlayerInventorySection />
+              </div>
 
-                {/* Center Control Panel */}
-                <div className="flex justify-center">
-                  <InventoryControl />
-                </div>
+              {/* Center - Control Panel */}
+              <div className="flex justify-center items-center px-8">
+                <InventoryControl />
+              </div>
 
-                {/* Right Inventory */}
-                <div className="transform hover:scale-105 transition-transform duration-500">
-                  <RightInventory />
-                </div>
+              {/* Right - Ground (same size as player inventory only) */}
+              <div className="flex justify-center items-center flex-shrink-0">
+                <GroundInventory />
               </div>
 
               <Tooltip />
